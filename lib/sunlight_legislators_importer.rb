@@ -1,17 +1,35 @@
+require_relative '../app/models/legislator'
 require 'csv'
 
 class SunlightLegislatorsImporter
-  def self.import(filename)
-    csv = CSV.new(File.open(filename), :headers => true)
+
+  IMPLEMENTED = ["title", "firstname", "middlename", "lastname", "party", "state", "in_office",
+  "gender", "phone", "fax", "website", "webform", "twitter_id", "birthdate"]
+
+  def self.import
+    csv = CSV.new(File.open('./db/data/legislators.csv'), :headers => true)
     csv.each do |row|
+      attributes = {}
       row.each do |field, value|
         # TODO: begin
-        raise NotImplementedError, "TODO: figure out what to do with this row and do it!"
-        # TODO: end
+        if !IMPLEMENTED.include?(field)
+          begin
+            raise NotImplementedError < StandardError
+              puts "TODO: figure out what to do with this row and do it!"
+            rescue
+          end
+        elsif value == ""
+           attributes[field.to_sym] = nil
+        else
+          attributes[field.to_sym] = value
+        end
       end
+      Legislator.create!(attributes)
+
     end
   end
 end
+
 
 # IF YOU WANT TO HAVE THIS FILE RUN ON ITS OWN AND NOT BE IN THE RAKEFILE, UNCOMMENT THE BELOW
 # AND RUN THIS FILE FROM THE COMMAND LINE WITH THE PROPER ARGUMENT.
